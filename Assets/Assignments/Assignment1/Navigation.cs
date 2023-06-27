@@ -32,25 +32,39 @@ public class Navigation : MonoBehaviour
     {
         if (agent.hasPath&& state != State.Walking)
         {
-            animator.SetBool("Moving", true);
-            animator.SetBool("PickUp", false);
+            //animator.SetBool("Moving", true);
+            //animator.SetBool("PickUp", false);
             state = State.Walking;
         }
         else if (!agent.hasPath && state != State.Idle)
         {
-            animator.SetBool("Moving", false);
-            animator.SetBool("PickUp", true);
-            animator.SetBool("Idle", true);
-            state = State.Idle;
-            StartCoroutine(enumerator());
+            //animator.SetBool("Moving", false);
+            //animator.SetBool("PickUp", true);
+            //animator.SetBool("Idle", true);
+            state = State.PickingUp;
         }
-        Debug.Log(agent.speed+" "+ agent.isStopped);
-        Debug.Log(agent.hasPath);
-        IEnumerator enumerator() 
+        if (state==State.Walking)
         {
+            animator.SetBool("Moving", true);
+        }
+        if (state==State.PickingUp)
+        {
+            animator.SetBool("PickUp", true);
+            animator.SetBool("Moving", false);
+            StartCoroutine(Pickup());
+        }
+        if (state == State.Idle) 
+        {
+            animator.SetBool("Idle", true);
+            animator.SetBool("Moving", false);
+        }
+            IEnumerator Pickup()
+        {
+            state = State.Idle;
             yield return new WaitForSeconds(1.967f);
             Destroy(target.gameObject);
             animator.SetBool("PickUp", false);
+            
         }
     }
 }
