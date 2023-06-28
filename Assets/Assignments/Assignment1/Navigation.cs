@@ -14,6 +14,7 @@ public class Navigation : MonoBehaviour
     [SerializeField] public NavMeshAgent agent;
     [SerializeField] Transform target;
     [SerializeField] Animator animator;
+    bool pickupInProgress = false;
     public State state;
     // Start is called before the first frame update
     private void Awake()
@@ -47,7 +48,7 @@ public class Navigation : MonoBehaviour
         {
             animator.SetBool("Moving", true);
         }
-        if (state==State.PickingUp)
+        if (state==State.PickingUp && !pickupInProgress)
         {
             animator.SetBool("PickUp", true);
             animator.SetBool("Moving", false);
@@ -60,11 +61,12 @@ public class Navigation : MonoBehaviour
         }
             IEnumerator Pickup()
         {
-            state = State.Idle;
+            pickupInProgress = true;
             yield return new WaitForSeconds(1.967f);
             Destroy(target.gameObject);
+
             animator.SetBool("PickUp", false);
-            
+            state = State.Idle;
         }
     }
 }
